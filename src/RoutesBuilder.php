@@ -160,6 +160,7 @@ class RoutesBuilder
     private static function getAllRoutes(ReflectionClass $class): array {
         return Stream::of($class->getMethods())
             ->map(function (ReflectionMethod $method) use ($class) {
+                if($method->getDeclaringClass()->name !== $class->name) return;
                 $middlewares = Stream::of($method->getAttributes(Middleware::class))
                     ->map(fn(ReflectionAttribute $attr) => $attr->newInstance())
                     ->map(fn(Middleware $middleware) => $middleware->middleware)
